@@ -19,3 +19,8 @@ go build
 ./sarcasm -c config.yaml
 ```
 
+### Test
+
+```
+http post localhost:4195/post "id"="foo1" "content"="this is totally sarcastic /s"
+```
