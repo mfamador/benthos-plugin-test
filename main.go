@@ -7,7 +7,7 @@ import (
 	"github.com/Jeffail/benthos/v3/lib/processor"
 	"github.com/Jeffail/benthos/v3/lib/service"
 	"github.com/Jeffail/benthos/v3/lib/types"
-	"github.com/mfamador/benthos-plugins/pkg/sarcasm"
+	"github.com/mfamador/benthos-plugins/lib/sarcasm"
 )
 
 func main() {
