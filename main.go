@@ -2,62 +2,19 @@
 package main
 
 import (
-	"bytes"
-	"strconv"
-	"time"
-
 	"github.com/Jeffail/benthos/v3/lib/log"
 	"github.com/Jeffail/benthos/v3/lib/metrics"
 	"github.com/Jeffail/benthos/v3/lib/processor"
 	"github.com/Jeffail/benthos/v3/lib/service"
 	"github.com/Jeffail/benthos/v3/lib/types"
+	"github.com/mfamador/benthos-plugins/pkg/sarcasm"
 )
-
-// HowSarcastic implements de sarcasm algorithm
-func HowSarcastic(content []byte) float64 {
-	if bytes.Contains(bytes.ToLower(content), []byte("/s")) {
-		const fullSarcastic = 100
-		return fullSarcastic
-	}
-	return 0
-}
-
-// SarcasmProc structure
-type SarcasmProc struct {
-	MetadataKey string `json:"metadata_key" yaml:"metadata_key"`
-}
-
-// ProcessMessage returns messages mutated with their sarcasm level.
-func (s *SarcasmProc) ProcessMessage(msg types.Message) ([]types.Message, types.Response) {
-	newMsg := msg.Copy()
-	if err := newMsg.Iter(func(i int, p types.Part) error {
-		sarcasm := HowSarcastic(p.Get())
-		sarcasmStr := strconv.FormatFloat(sarcasm, 'f', -1, 64)
-		if len(s.MetadataKey) > 0 {
-			p.Metadata().Set(s.MetadataKey, sarcasmStr)
-		} else {
-			p.Set([]byte(sarcasmStr))
-		}
-		return nil
-	}); err != nil {
-		panic("Invalid config")
-	}
-	return []types.Message{newMsg}, nil
-}
-
-// CloseAsync does nothing.
-func (s *SarcasmProc) CloseAsync() {}
-
-// WaitForClose does nothing.
-func (s *SarcasmProc) WaitForClose(timeout time.Duration) error {
-	return nil
-}
 
 func main() {
 	processor.RegisterPlugin(
 		"how_sarcastic",
 		func() interface{} {
-			s := SarcasmProc{}
+			s := sarcasm.SarcasmProc{}
 			return &s
 		},
 		func(
@@ -66,7 +23,7 @@ func main() {
 			logger log.Modular,
 			stats metrics.Type,
 		) (types.Processor, error) {
-			return iconf.(*SarcasmProc), nil
+			return iconf.(*sarcasm.SarcasmProc), nil
 		},
 	)
 	service.Run()
