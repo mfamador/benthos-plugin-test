@@ -24,3 +24,7 @@ go build
 ```
 http post localhost:4195/post "id"="foo1" "content"="this is totally sarcastic /s"
 ```
+or
+```
+curl -XPOST localhost:4195/post -d '{"id":"foo1","content":"this is totally sarcastic /s"}'
+```
